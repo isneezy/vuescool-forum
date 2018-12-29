@@ -1,21 +1,20 @@
 <template>
     <div class="col-full">
         <h1>Welcome to the Forum</h1>
-        <tread-list :threads="threads"/>
+        <category-list :categories="categories"/>
     </div>
 </template>
 
 <script>
 import sourceData from '@/data'
-import TreadList from '../components/ThreadList'
+import CategoryList from '../components/CategoryList'
 
+console.log(sourceData)
 export default {
-  components: {TreadList},
+  components: {CategoryList},
   data () {
     return {
-      threads: Object.values(sourceData.threads),
-      posts: sourceData.posts,
-      users: sourceData.users
+      categories: Object.values(sourceData.categories)
     }
   }
 }

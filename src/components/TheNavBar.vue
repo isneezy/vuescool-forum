@@ -17,13 +17,13 @@
       <ul>
 
         <li class="navbar-user">
-          <a href="#">
+          <router-link :to="{name: 'profile'}">
             <img class="avatar-small" :src="authUser.avatar" :alt="authUser.username">
             <span>
                         {{ authUser.name }}
                         <img class="icon-profile" src="../assets/img/svg/arrow-profile.svg" alt="">
                     </span>
-          </a>
+          </router-link>
 
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
@@ -39,7 +39,7 @@
 
       <ul>
         <li class="navbar-item">
-          <a href="index.html">Home</a>
+          <router-link to="/">Home</router-link>
         </li>
         <li class="navbar-item">
           <a href="category.html">Category</a>

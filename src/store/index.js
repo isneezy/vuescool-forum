@@ -24,6 +24,10 @@ export default new Vuex.Store({
       commit('setPost', {postId, post})
       commit('appendPostToThread', {threadId: post.threadId, postId})
       commit('appendPostToUser', {userId: post.userId, postId})
+    },
+
+    updateUser ({commit}, user) {
+      commit('setUser', {user, userId: user['.key']})
     }
   },
 
@@ -31,6 +35,11 @@ export default new Vuex.Store({
     setPost (state, {postId, post}) {
       Vue.set(state.posts, postId, post)
     },
+
+    setUser (state, {userId, user}) {
+      Vue.set(state.users, userId, user)
+    },
+
     appendPostToThread (state, {threadId, postId}) {
       const thread = state.threads[threadId]
       Vue.set(thread.posts, postId, postId)

@@ -22,6 +22,7 @@
 </template>
 
 <script>
+  import { countObjectProerties } from '@/utils'
   export default {
     name: 'FormListItem',
     props: {
@@ -32,7 +33,7 @@
     },
     computed: {
       threadsCount () {
-        return Object.values(this.forum.threads ? this.forum.threads : []).length
+        return countObjectProerties(this.forum.threads)
       }
     }
   }

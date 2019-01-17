@@ -61,6 +61,8 @@
 <script>
   import PostList from '../components/PostList'
   import { mapGetters } from 'vuex'
+  import { countObjectProerties } from '@/utils'
+
   export default {
     name: 'PageProfile',
     components: {PostList},
@@ -69,14 +71,10 @@
         user: 'authUser'
       }),
       userThreadsCount () {
-        return this.user.threads
-          ? Object.keys(this.user.threads).length
-          : 0
+        return countObjectProerties(this.user.threads)
       },
       userPostsCount () {
-        return this.user.posts
-          ? Object.keys(this.user.posts).length
-          : 0
+        return countObjectProerties(this.user.posts)
       },
 
       userPosts () {

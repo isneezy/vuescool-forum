@@ -1,6 +1,13 @@
 <template>
   <div class="col-full">
-    <h1>{{ thread.title }}</h1>
+    <h1>{{ thread.title }}
+      <router-link
+        :to="{name: 'threadEdit', params: {id: this.id}}"
+        class="btn-green btn-small"
+        tag="button">
+        Edit Thread
+      </router-link>
+    </h1>
     <post-list :posts="posts"/>
     <post-editor
       :thread-id="id"

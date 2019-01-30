@@ -6,7 +6,7 @@
                     <h1>{{ forum.name }}</h1>
                     <p class="text-lead">Discuss your passion for food and cooking</p>
                 </div>
-                <router-link :to="{name: 'threadCreate', params: {forum: this.forum}}" class="btn-green btn-small">Start a thread</router-link>
+                <router-link :to="{name: 'threadCreate', params: {forumId: this.forum['.key']}}" class="btn-green btn-small">Start a thread</router-link>
             </div>
         </div>
 

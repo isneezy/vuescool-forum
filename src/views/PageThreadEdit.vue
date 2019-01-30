@@ -1,9 +1,11 @@
 <template>
   <div class="col-full push-top">
 
-    <h1>Create new thread in <i>{{ forum.name }}</i></h1>
+    <h1>Editing <i>{{ thread.title }}</i></h1>
 
     <thread-editor
+      :title="thread.title"
+      :text="text"
       @save="save"
       @cancel="cancel"
     />
@@ -14,24 +16,27 @@
 <script>
   import ThreadEditor from '@/components/ThreadEditor'
   export default {
-    name: 'PageThreadCreate',
+    name: 'PageThreadEdit',
     components: {ThreadEditor},
     props: {
-      forumId: {
+      id: {
         required: true,
         type: String
       }
     },
     computed: {
-      forum () {
-        return this.$store.state.forums[this.forumId]
+      thread () {
+        return this.$store.state.threads[this.id]
+      },
+      text () {
+        return this.$store.state.posts[this.thread.firstPostId].text
       }
     },
 
     methods: {
       save ({title, text}) {
-        this.$store.dispatch('createThread', {
-          forumId: this.forum['.key'],
+        this.$store.dispatch('updateThread', {
+          id: this.id,
           title,
           text
         }).then(thread => {
@@ -39,7 +44,7 @@
         })
       },
       cancel () {
-        this.$router.push({name: 'forum', params: {id: this.forum['.key']}})
+        this.$router.push({name: 'threadShow', params: {id: this.id}})
       }
     }
   }

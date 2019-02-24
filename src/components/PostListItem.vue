@@ -8,7 +8,8 @@
         <img class="avatar-large" :src="user.avatar" :alt="user.name">
       </a>
 
-      <p class="desktop-only text-small">{{ userPostCount }} posts</p>
+      <p class="desktop-only text-small">{{ userThreadsCount }} threads</p>
+      <p class="desktop-only text-small">{{ userPostsCount }} posts</p>
 
     </div>
 
@@ -41,7 +42,6 @@
 </template>
 
 <script>
-  import { countObjectProerties } from '@/utils'
   import PostEditor from './PostEditor'
 
   export default {
@@ -57,8 +57,11 @@
       user () {
         return this.$store.state.users[this.post.userId]
       },
-      userPostCount () {
-        return countObjectProerties(this.user.posts)
+      userThreadsCount () {
+        return this.$store.getters.userThreadsCount(this.user['.key'])
+      },
+      userPostsCount () {
+        return this.$store.getters.userPostsCount(this.user['.key'])
       }
     }
   }

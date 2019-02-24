@@ -3,15 +3,11 @@
     <user-profile-card
       v-if="!edit"
       :user="user"
-      :user-posts-count="userPostsCount"
-      :user-threads-count="userThreadsCount"
     />
 
     <user-profile-card-editor
       v-else
       :user="user"
-      :user-posts-count="userPostsCount"
-      :user-threads-count="userThreadsCount"
     />
 
     <div class="col-7 push-top">
@@ -33,7 +29,6 @@
 <script>
   import PostList from '../components/PostList'
   import { mapGetters } from 'vuex'
-  import { countObjectProerties } from '@/utils'
   import UserProfileCard from '../components/UserProfileCard'
   import UserProfileCardEditor from '../components/UserProfileCardEditor'
 
@@ -50,13 +45,6 @@
       ...mapGetters({
         user: 'authUser'
       }),
-      userThreadsCount () {
-        return countObjectProerties(this.user.threads)
-      },
-      userPostsCount () {
-        return countObjectProerties(this.user.posts)
-      },
-
       userPosts () {
         if (this.user.posts) {
           return Object.values(this.$store.state.posts)

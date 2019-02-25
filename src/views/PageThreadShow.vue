@@ -1,27 +1,31 @@
 <template>
   <div class="col-large push-top">
-    <h1>{{ thread.title }}
-      <router-link
-        :to="{name: 'threadEdit', params: {id: this.id}}"
-        class="btn-green btn-small"
-        tag="button">
-        Edit Thread
-      </router-link>
-    </h1>
+    <template v-if="thread && user">
+      <h1>{{ thread.title }}
+        <router-link
+          :to="{name: 'threadEdit', params: {id: this.id}}"
+          class="btn-green btn-small"
+          tag="button">
+          Edit Thread
+        </router-link>
+      </h1>
 
-    <p>
-      By <a href="#" class="link-unstyled">{{ user.name }}</a>, 2 hours ago.
-      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{ repliesCount }} replies by {{ contributorsCount }} contributors</span>
-    </p>
+      <p>
+        By <a href="#" class="link-unstyled">{{ user.name }}</a>, 2 hours ago.
+        <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{ repliesCount }} replies by {{ contributorsCount }} contributors</span>
+      </p>
 
-    <post-list :posts="posts"/>
-    <post-editor
-      :thread-id="id"
-      user-id="7uVPJS9GHoftN58Z2MXCYDqmNAh2"/>
+      <post-list :posts="posts"/>
+      <post-editor
+        :thread-id="id"
+        user-id="7uVPJS9GHoftN58Z2MXCYDqmNAh2"/>
+    </template>
   </div>
 </template>
 
 <script>
+  import {mapActions} from 'vuex'
+  import {countObjectProerties} from '../utils'
   import PostList from '../components/PostList'
   import PostEditor from '../components/PostEditor'
 
@@ -43,20 +47,26 @@
       },
 
       contributorsCount () {
-        // find replies
-        const replies = Object.keys(this.thread.posts)
-          .filter(postId => postId !== this.thread.firstPostId)
-          .map(postId => this.$store.state.posts[postId])
-        // get user ids
-        const usersIds = replies.map(post => post.userId)
-        // count unique ids
-        return usersIds.filter((userId, index) => index === usersIds.indexOf(userId)).length
+        return countObjectProerties(this.thread.contributors)
       },
       posts () {
         const postIds = Object.keys(this.thread.posts)
         return Object.values(this.$store.state.posts)
           .filter(post => postIds.includes(post['.key']))
       }
+    },
+    methods: {
+      ...mapActions(['fetchThread', 'fetchPosts', 'fetchUser'])
+    },
+    created () {
+      this.fetchThread({id: this.id}).then(thread => {
+        this.fetchUser({id: thread.userId})
+        this.fetchPosts({ids: Object.keys(thread.posts)}).then(posts => {
+          posts.forEach(post => {
+            this.fetchUser({id: post.userId})
+          })
+        })
+      })
     }
   }
 </script>

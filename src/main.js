@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/database'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -26,5 +27,8 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  beforeCreate () {
+    store.dispatch('fetchUser', {id: store.state.authId})
+  }
 })

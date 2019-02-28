@@ -56,6 +56,7 @@
     created () {
       this.fetchThread({id: this.id})
         .then(thread => this.fetchPost({id: thread.firstPostId}))
+        .then(this.asyncDataStatus_fetched)
     }
   }
 </script>

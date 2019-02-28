@@ -16,9 +16,11 @@
 <script>
   import {mapActions} from 'vuex'
   import ThreadEditor from '@/components/ThreadEditor'
+  import asyncDataMixin from '../mixins/asyncDataStatus'
   export default {
     name: 'PageThreadEdit',
     components: {ThreadEditor},
+    mixins: [asyncDataMixin],
     props: {
       id: {
         required: true,

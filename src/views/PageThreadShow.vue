@@ -1,36 +1,36 @@
 <template>
-  <div class="col-large push-top">
-    <template v-if="thread && user">
-      <h1>{{ thread.title }}
-        <router-link
-          :to="{name: 'threadEdit', params: {id: this.id}}"
-          class="btn-green btn-small"
-          tag="button">
-          Edit Thread
-        </router-link>
-      </h1>
+  <div v-if="asyncDataStatus_ready" class="col-large push-top">
+    <h1>{{ thread.title }}
+      <router-link
+        :to="{name: 'threadEdit', params: {id: this.id}}"
+        class="btn-green btn-small"
+        tag="button">
+        Edit Thread
+      </router-link>
+    </h1>
 
-      <p>
-        By <a href="#" class="link-unstyled">{{ user.name }}</a>, 2 hours ago.
-        <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{ repliesCount }} replies by {{ contributorsCount }} contributors</span>
-      </p>
+    <p>
+      By <a href="#" class="link-unstyled">{{ user.name }}</a>, 2 hours ago.
+      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{ repliesCount }} replies by {{ contributorsCount }} contributors</span>
+    </p>
 
-      <post-list :posts="posts"/>
-      <post-editor
-        :thread-id="id"
-        user-id="7uVPJS9GHoftN58Z2MXCYDqmNAh2"/>
-    </template>
+    <post-list :posts="posts"/>
+    <post-editor
+      :thread-id="id"
+      user-id="7uVPJS9GHoftN58Z2MXCYDqmNAh2"/>
   </div>
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
-  import {countObjectProerties} from '../utils'
+  import { mapActions } from 'vuex'
+  import { countObjectProerties } from '../utils'
   import PostList from '../components/PostList'
   import PostEditor from '../components/PostEditor'
+  import asyncDataMixin from '../mixins/asyncDataStatus'
 
   export default {
     components: {PostEditor, PostList},
+    mixins: [asyncDataMixin],
     props: {
       id: {required: true, type: String}
     },
@@ -59,14 +59,19 @@
       ...mapActions(['fetchThread', 'fetchPosts', 'fetchUser'])
     },
     created () {
-      this.fetchThread({id: this.id}).then(thread => {
-        this.fetchUser({id: thread.userId})
-        this.fetchPosts({ids: Object.keys(thread.posts)}).then(posts => {
-          posts.forEach(post => {
-            this.fetchUser({id: post.userId})
-          })
+      // fetch thread
+      this.fetchThread({id: this.id})
+        .then(thread => {
+          // fetch user
+          this.fetchUser({id: thread.userId})
+          return this.fetchPosts({ids: Object.keys(thread.posts)})
         })
-      })
+        .then(posts => {
+          return Promise.all(posts.map(post => {
+            this.fetchUser({id: post.userId})
+          }))
+        })
+        .then(this.asyncDataStatus_fetched)
     }
   }
 </script>

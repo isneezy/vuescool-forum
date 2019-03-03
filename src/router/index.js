@@ -4,10 +4,12 @@ import Home from '@views/PageHome'
 import ThreadShow from '@views/PageThreadShow'
 import ThreadCreate from '@views/PageThreadCreate'
 import ThreadEdit from '@views/PageThreadEdit'
+import CategoryShow from '../views/PageCategory'
 import Forum from '@views/PageForum'
 import Profile from '@views/PageProfile'
+import SignIn from '@views/PageSignIn'
+import Register from '@views/PageRegister'
 import NotFound from '@views/PageNotFound'
-import CategoryShow from '../views/PageCategory'
 
 Vue.use(Router)
 
@@ -62,6 +64,18 @@ export default new Router({
       name: 'profileEdit',
       component: Profile,
       props: {edit: true}
+    },
+
+    {
+      path: '/signin',
+      name: 'signin',
+      component: SignIn
+    },
+
+    {
+      path: '/register',
+      name: 'register',
+      component: Register
     },
 
     {

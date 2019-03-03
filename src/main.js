@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import firebase from 'firebase/app'
 import 'firebase/database'
+import 'firebase/auth'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -23,13 +24,16 @@ const config = {
 
 firebase.initializeApp(config)
 
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    store.dispatch('fetchAuthUser')
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App),
-  beforeCreate () {
-    store.dispatch('fetchUser', {id: store.state.authId})
-  }
+  render: h => h(App)
 })

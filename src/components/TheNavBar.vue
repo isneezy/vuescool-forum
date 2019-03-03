@@ -14,26 +14,33 @@
 
     <!-- use .navbar-open to open nav -->
     <nav class="navbar">
-      <ul>
 
-        <li class="navbar-user" v-if="authUser">
-          <router-link :to="{name: 'profile'}">
+      <ul v-if="authUser">
+        <li class="navbar-user">
+          <a @click.prevent="dropDownActive = !dropDownActive">
             <img class="avatar-small" :src="authUser.avatar" :alt="authUser.username">
             <span>
-                        {{ authUser.name }}
-                        <img class="icon-profile" src="../assets/img/svg/arrow-profile.svg" alt="">
-                    </span>
-          </router-link>
-
+              {{ authUser.name }}
+              <img class="icon-profile" src="../assets/img/svg/arrow-profile.svg" alt=""/>
+            </span>
+          </a>
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
-          <div id="user-dropdown">
+          <div id="user-dropdown" :class="{'active-drop': dropDownActive}">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
-              <li class="dropdown-menu-item"><a href="profile.html">View profile</a></li>
-              <li class="dropdown-menu-item"><a href="#">Log out</a></li>
+              <li class="dropdown-menu-item">
+                <router-link :to="{name: 'profile'}">View profile</router-link>
+              </li>
+              <li class="dropdown-menu-item"><a @click.prevent="$store.dispatch('signOut')">Logout</a></li>
             </ul>
           </div>
+        </li>
+      </ul>
+      <ul v-else>
+        <li class="navbar-item">
+          <router-link :to="{name: 'signin'}">Sign In</router-link>
+          <router-link :to="{name: 'register'}">Register</router-link>
         </li>
       </ul>
 
@@ -63,9 +70,13 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'TheNavBar',
+    data: () => ({
+      dropDownActive: false
+    }),
     computed: {
       ...mapGetters(['authUser'])
     }

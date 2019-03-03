@@ -89,6 +89,63 @@ export default {
     })
   },
 
+  createUser ({commit, state}, {id, email, name, username, avatar = null}) {
+    return new Promise((resolve, reject) => {
+      const registeredAt = Math.floor(Date.now() / 1000)
+      const usernameLower = username.toLowerCase()
+      email = email.toLowerCase()
+      const user = {avatar, email, name, username, usernameLower, registeredAt}
+      firebase.database().ref('users').child(id).set(user).then(() => {
+        commit('setItem', {resource: 'users', id, item: user})
+        resolve(state.users[id])
+      }, reject)
+    })
+  },
+
+  createUserWithEmailAndPassword ({dispatch}, {email, name, username, password, avatar = null}) {
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(({user}) => dispatch('createUser', {id: user.uid, email, name, username, avatar}))
+  },
+
+  signInWithUsernameAndPassword (context, {email, password}) {
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+  },
+
+  signInWithGoogle ({dispatch}) {
+    const provider = new firebase.auth.GoogleAuthProvider()
+    return firebase.auth().signInWithPopup(provider)
+      .then(data => {
+        const user = data.user
+        firebase.database().ref('users').child(user.uid).once('value', snapshot => {
+          if (!snapshot.exists()) {
+            return dispatch('createUser', {id: user.uid, email: user.email, name: user.displayName, username: user.email, avatar: user.photoURL})
+              .then(() => dispatch('fetchAuthUser'))
+          }
+        })
+      })
+  },
+
+  signOut ({commit}) {
+    firebase.auth().signOut().then(() => commit('setAuthId', null))
+  },
+
+  fetchAuthUser ({dispatch, commit}, id) {
+    id = firebase.auth().currentUser.uid
+    return new Promise(resolve => {
+      firebase.database().ref('users').child(id).once('value', snapshot => {
+        if (snapshot.exists()) {
+          return dispatch('fetchUser', {id})
+            .then(user => {
+              commit('setAuthId', id)
+              resolve(user)
+            })
+        } else {
+          resolve(null)
+        }
+      })
+    })
+  },
+
   updateUser ({commit}, user) {
     commit('setUser', {user, userId: user['.key']})
   },

@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import store from './index'
+import { removeEmpyProperties } from '../utils'
 
 export default {
   createPost ({commit, state}, post) {
@@ -164,7 +165,22 @@ export default {
   },
 
   updateUser ({commit}, user) {
-    commit('setUser', {user, userId: user['.key']})
+    const updates = {
+      avatar: user.avatar,
+      username: user.username,
+      name: user.name,
+      bio: user.bio,
+      website: user.website,
+      email: user.email,
+      location: user.location
+    }
+    return new Promise((resolve, reject) => {
+      firebase.database().ref('users').child(user['.key']).update(removeEmpyProperties(updates))
+        .then(() => {
+          commit('setUser', {user, userId: user['.key']})
+          resolve(user)
+        }, reject)
+    })
   },
 
   fetchAllCategories ({commit, state}) {

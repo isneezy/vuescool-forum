@@ -27,36 +27,35 @@
 </template>
 
 <script>
-  import PostList from '../components/PostList'
-  import { mapGetters } from 'vuex'
-  import UserProfileCard from '../components/UserProfileCard'
-  import UserProfileCardEditor from '../components/UserProfileCardEditor'
+import { mapGetters } from 'vuex'
+import asyncDataMixin from '@/mixins/asyncDataStatus'
+import PostList from '../components/PostList'
+import UserProfileCard from '../components/UserProfileCard'
+import UserProfileCardEditor from '../components/UserProfileCardEditor'
 
-  export default {
-    name: 'PageProfile',
-    components: {UserProfileCardEditor, UserProfileCard, PostList},
-    props: {
-      edit: {
-        type: Boolean,
-        default: false
-      }
-    },
-    computed: {
-      ...mapGetters({
-        user: 'authUser'
-      }),
-      userPosts () {
-        if (this.user.posts) {
-          return Object.values(this.$store.state.posts)
-            .filter(post => post.userId === this.user['.key'])
-        }
-        return []
-      }
-    },
-    created () {
-      this.$emit('ready')
+export default {
+  name: 'PageProfile',
+  components: {UserProfileCardEditor, UserProfileCard, PostList},
+  mixins: [asyncDataMixin],
+  props: {
+    edit: {
+      type: Boolean,
+      default: false
     }
+  },
+  computed: {
+    ...mapGetters({
+      user: 'authUser'
+    }),
+    userPosts () {
+      return this.$store.getters.userPosts(this.user['.key'])
+    }
+  },
+  created () {
+    this.$store.dispatch('fetchPosts', {ids: this.user.posts})
+        .then(this.asyncDataStatus_fetched)
   }
+}
 </script>
 
 <style scoped>

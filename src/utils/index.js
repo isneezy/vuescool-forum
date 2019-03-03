@@ -4,3 +4,11 @@ export const countObjectProerties = (obj) => {
   }
   return 0
 }
+
+export const removeEmpyProperties = obj => {
+  const objCopy = {...obj}
+  Object.keys(obj).forEach(key => {
+    if (!obj[key]) delete objCopy[key]
+  })
+  return objCopy
+}

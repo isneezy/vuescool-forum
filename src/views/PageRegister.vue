@@ -43,7 +43,9 @@
 </template>
 
 <script>
+import authMixin from '@/mixins/auth'
 export default {
+  mixins: [authMixin],
   data () {
     return {
       form: {
@@ -57,12 +59,11 @@ export default {
   },
   methods: {
     register () {
-      console.log(this.form)
-      this.$store.dispatch('createUserWithEmailAndPassword', this.form).then(() => this.$router.push('/'))
+      this.$store.dispatch('createUserWithEmailAndPassword', this.form)
+        .then(this.auth_successRedirect)
     },
     registerWithGoogle () {
-      this.$store.dispatch('signInWithGoogle')
-        .then(() => this.$router.push('/'))
+      this.signInWithGoogle()
     }
   },
   created () {

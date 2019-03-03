@@ -31,7 +31,9 @@
 </template>
 
 <script>
+import authMixin from '@/mixins/auth'
 export default {
+  mixins: [authMixin],
   data: () => ({
     form: {
       email: null,
@@ -41,12 +43,7 @@ export default {
   methods: {
     signIn () {
       this.$store.dispatch('signInWithUsernameAndPassword', this.form)
-        .then(() => this.$router.push('/'))
-        .catch(e => alert(`🤷‍♂️ ${e.message}`))
-    },
-    signInWithGoogle () {
-      this.$store.dispatch('signInWithGoogle')
-        .then(() => this.$router.push('/'))
+        .then(this.auth_successRedirect)
         .catch(e => alert(`🤷‍♂️ ${e.message}`))
     }
   },

@@ -27,7 +27,6 @@
 </template>
 
 <script>
-  import store from '@/store'
   import PostList from '../components/PostList'
   import { mapGetters } from 'vuex'
   import UserProfileCard from '../components/UserProfileCard'
@@ -53,10 +52,6 @@
         }
         return []
       }
-    },
-    beforeRouteEnter (to, from, next) {
-      if (store.state.authId) next()
-      else next({name: 'home'})
     },
     created () {
       this.$emit('ready')

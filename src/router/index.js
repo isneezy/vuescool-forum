@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
+import store from '@/store'
+
 import Home from '@views/PageHome'
 import ThreadShow from '@views/PageThreadShow'
 import ThreadCreate from '@views/PageThreadCreate'
@@ -13,7 +16,7 @@ import NotFound from '@views/PageNotFound'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -37,13 +40,15 @@ export default new Router({
       path: '/thread/create/:forumId',
       name: 'threadCreate',
       component: ThreadCreate,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '/thread/:id/edit',
       name: 'threadEdit',
       component: ThreadEdit,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '/thread/:id',
@@ -56,26 +61,40 @@ export default new Router({
       path: '/me',
       name: 'profile',
       component: Profile,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
 
     {
       path: '/me/edit',
       name: 'profileEdit',
       component: Profile,
-      props: {edit: true}
+      props: {edit: true},
+      meta: {requiresAuth: true}
     },
 
     {
       path: '/signin',
       name: 'signin',
-      component: SignIn
+      component: SignIn,
+      meta: {requiresGuest: true}
+    },
+
+    {
+      path: '/logout',
+      name: 'signout',
+      meta: {requiresAuth: true},
+      beforeEnter (to, from, next) {
+        store.dispatch('signOut')
+          .then(() => next({name: 'home'}))
+      }
     },
 
     {
       path: '/register',
       name: 'register',
-      component: Register
+      component: Register,
+      meta: {requiresGuest: true}
     },
 
     {
@@ -85,3 +104,26 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  console.log(`🚦 navigating to ${to.name} from ${from.name}`)
+  store.dispatch('initAuthentication').then(user => {
+    if (to.matched.some(route => route.meta.requiresAuth)) {
+      if (user) {
+        next()
+      } else {
+        next({name: 'signin', query: {redirectTo: to.path}})
+      }
+    } else if (to.matched.some(route => route.meta.requiresGuest)) {
+      if (!user) {
+        next()
+      } else {
+        next({name: 'home'})
+      }
+    } else {
+      next()
+    }
+  })
+})
+
+export default router

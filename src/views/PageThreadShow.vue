@@ -16,13 +16,18 @@
 
     <post-list :posts="posts"/>
     <post-editor
+      v-if="authUser"
       :thread-id="id"
       user-id="7uVPJS9GHoftN58Z2MXCYDqmNAh2"/>
+    <div v-else class="text-center" style="margin-bottom: 50px;">
+      <router-link :to="{name: 'signin', query: {redirectTo: $route.path}}">Sign in</router-link> or
+      <router-link :to="{name: 'register', query: {redirectTo: $route.path}}">Register</router-link> to post a reply.
+    </div>
   </div>
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import { countObjectProerties } from '../utils'
   import PostList from '../components/PostList'
   import PostEditor from '../components/PostEditor'
@@ -35,6 +40,7 @@
       id: {required: true, type: String}
     },
     computed: {
+      ...mapGetters(['authUser']),
       thread () {
         return this.$store.state.threads[this.id]
       },

@@ -4,6 +4,7 @@
     <h1>Editing <i>{{ thread.title }}</i></h1>
 
     <thread-editor
+      ref="editor"
       :title="thread.title"
       :text="text"
       @save="save"
@@ -17,10 +18,11 @@
   import {mapActions} from 'vuex'
   import ThreadEditor from '@/components/ThreadEditor'
   import asyncDataMixin from '../mixins/asyncDataStatus'
+  import createThreadEditorMixin from '../mixins/createThreadEditorLeaveConfirmation'
   export default {
     name: 'PageThreadEdit',
     components: {ThreadEditor},
-    mixins: [asyncDataMixin],
+    mixins: [asyncDataMixin, createThreadEditorMixin('editor')],
     props: {
       id: {
         required: true,
@@ -45,6 +47,7 @@
           title,
           text
         }).then(thread => {
+          this.threadEditorLeaveConfirmation_saved()
           this.$router.push({name: 'threadShow', params: {id: thread['.key']}})
         })
       },

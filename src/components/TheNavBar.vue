@@ -1,5 +1,5 @@
 <template>
-  <header class="header" id="header" v-click-outside="closeMobileNav">
+  <header class="header" id="header" v-click-outside="closeMobileNav" v-handle-scroll="closeMobileNav">
 
     <router-link :to="{name: 'home'}" class="logo">
       <img src="../assets/img/svg/vueschool-logo.svg">
@@ -82,10 +82,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import ClickOutside from '../directives/click-outside'
+import HandleScroll from '../directives/handle-scroll'
 
 export default {
   name: 'TheNavBar',
-  directives: {ClickOutside},
+  directives: {ClickOutside, HandleScroll},
   data: () => ({
     userDropDownActive: false,
     mobileNavOpen: false

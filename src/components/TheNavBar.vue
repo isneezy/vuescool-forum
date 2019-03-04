@@ -1,11 +1,11 @@
 <template>
-  <header class="header" id="header">
+  <header class="header" id="header" v-click-outside="closeMobileNav">
 
     <router-link :to="{name: 'home'}" class="logo">
       <img src="../assets/img/svg/vueschool-logo.svg">
     </router-link>
 
-    <div class="btn-hamburger">
+    <div class="btn-hamburger" @click="mobileNavOpen = !mobileNavOpen">
       <!-- use .btn-humburger-active to open the menu -->
       <div class="top bar"></div>
       <div class="middle bar"></div>
@@ -13,7 +13,7 @@
     </div>
 
     <!-- use .navbar-open to open nav -->
-    <nav class="navbar">
+    <nav class="navbar" :class="{'navbar-open': mobileNavOpen}">
 
       <ul v-if="authUser">
         <li class="navbar-user">
@@ -38,32 +38,42 @@
         </li>
       </ul>
       <ul v-else>
-        <li class="navbar-item">
+        <li class="navbar-user">
           <router-link :to="{name: 'signin'}">Sign In</router-link>
           <router-link :to="{name: 'register'}">Register</router-link>
         </li>
       </ul>
 
       <ul>
-        <li class="navbar-item">
-          <router-link to="/">Home</router-link>
-        </li>
-        <li class="navbar-item">
-          <a href="category.html">Category</a>
-        </li>
-        <li class="navbar-item">
-          <a href="forum.html">Forum</a>
-        </li>
-        <li class="navbar-item">
-          <a href="thread.html">Thread</a>
-        </li>
+        <!--<li class="navbar-item">-->
+          <!--<router-link to="/">Home</router-link>-->
+        <!--</li>-->
+        <!--<li class="navbar-item">-->
+          <!--<a href="category.html">Category</a>-->
+        <!--</li>-->
+        <!--<li class="navbar-item">-->
+          <!--<a href="forum.html">Forum</a>-->
+        <!--</li>-->
+        <!--<li class="navbar-item">-->
+          <!--<a href="thread.html">Thread</a>-->
+        <!--</li>-->
         <!-- Show these option only on mobile-->
-        <li class="navbar-item mobile-only">
-          <a href="profile.html">My Profile</a>
-        </li>
-        <li class="navbar-item mobile-only">
-          <a href="#">Logout</a>
-        </li>
+        <template v-if="authUser">
+          <li class="navbar-item mobile-only">
+            <router-link :to="{name: 'profile'}">View profile</router-link>
+          </li>
+          <li class="navbar-item mobile-only">
+            <router-link to="logout">Logout</router-link>
+          </li>
+        </template>
+        <template v-else>
+          <li class="navbar-item">
+            <router-link :to="{name: 'signin'}">Sign In</router-link>
+          </li>
+          <li class="navbar-item">
+            <router-link :to="{name: 'register'}">Register</router-link>
+          </li>
+        </template>
       </ul>
     </nav>
   </header>
@@ -77,7 +87,8 @@ export default {
   name: 'TheNavBar',
   directives: {ClickOutside},
   data: () => ({
-    userDropDownActive: false
+    userDropDownActive: false,
+    mobileNavOpen: false
   }),
   computed: {
     ...mapGetters({
@@ -87,6 +98,9 @@ export default {
   methods: {
     closeUserDropDown () {
       this.userDropDownActive = false
+    },
+    closeMobileNav () {
+      this.mobileNavOpen = false
     }
   }
 }

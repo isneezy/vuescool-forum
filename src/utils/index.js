@@ -5,10 +5,10 @@ export const countObjectProerties = (obj) => {
   return 0
 }
 
-export const removeEmpyProperties = obj => {
+export const removeEmptyProperties = obj => {
   const objCopy = {...obj}
-  Object.keys(obj).forEach(key => {
-    if (!obj[key]) delete objCopy[key]
+  Object.keys(objCopy).forEach(key => {
+    if ([null, undefined].includes(objCopy[key])) delete objCopy[key]
   })
   return objCopy
 }

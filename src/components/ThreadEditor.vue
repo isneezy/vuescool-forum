@@ -2,18 +2,30 @@
   <form @submit.prevent="save">
     <div class="form-group">
       <label for="thread_title">Title:</label>
-      <input v-model="form.title" type="text" id="thread_title" class="form-input" name="title">
+      <input
+        @blur="$v.form.title.$touch()"
+        v-model="form.title"
+        type="text" id="thread_title" class="form-input" name="title">
+      <template v-if="$v.form.title.$error">
+        <span v-if="!$v.form.title.required" class="form-error">This field is required</span>
+        <span v-if="!$v.form.title.minLength" class="form-error">This field needs to be at least 10 characters long</span>
+      </template>
     </div>
 
     <div class="form-group">
       <label for="thread_content">Content:</label>
       <textarea
+        @blur="$v.form.text.$touch()"
         v-model="form.text"
         id="thread_content"
         class="form-input"
         name="content"
         rows="8"
         cols="140"></textarea>
+      <template v-if="$v.form.text.$error">
+        <span v-if="!$v.form.text.required" class="form-error">This field is required</span>
+        <span v-if="!$v.form.text.minLength" class="form-error">The thread needs to be at least 40 characters long. Type at least {{(form.text.length - 40) * -1}} more</span>
+      </template>
     </div>
 
     <div class="btn-group">
@@ -24,43 +36,52 @@
 </template>
 
 <script>
-  export default {
-    name: 'ThreadEditor',
-    props: {
-      title: {
-        type: String,
-        default: ''
-      },
-      text: {
-        type: String,
-        default: ''
-      }
+import {required, minLength} from 'vuelidate/lib/validators'
+export default {
+  name: 'ThreadEditor',
+  props: {
+    title: {
+      type: String,
+      default: ''
     },
-    data () {
-      return {
-        form: {
-          title: this.title,
-          text: this.text
-        }
-      }
-    },
-
-    computed: {
-      isUpdating () {
-        return !!this.title
-      }
-    },
-
-    methods: {
-      save () {
-        this.$emit('save', {title: this.form.title, text: this.form.text})
-      },
-
-      cancel () {
-        this.$emit('cancel')
+    text: {
+      type: String,
+      default: ''
+    }
+  },
+  data () {
+    return {
+      form: {
+        title: this.title,
+        text: this.text
       }
     }
+  },
+  validations: {
+    form: {
+      title: {required, minLength: minLength(10)},
+      text: {required, minLength: minLength(40)}
+    }
+  },
+  computed: {
+    isUpdating () {
+      return !!this.title
+    }
+  },
+
+  methods: {
+    save () {
+      this.$v.form.$touch()
+      if (this.$v.form.$invalid) return
+
+      this.$emit('save', {title: this.form.title, text: this.form.text})
+    },
+
+    cancel () {
+      this.$emit('cancel')
+    }
   }
+}
 </script>
 
 <style scoped>

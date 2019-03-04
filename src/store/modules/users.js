@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import firebase from 'firebase/app'
-import { countObjectProerties, removeEmpyProperties } from '../../utils'
+import { countObjectProerties, removeEmptyProperties } from '../../utils'
 import { makeAppendChildToParentMutation } from '../assetHelpers'
 
 export default {
@@ -54,7 +54,7 @@ export default {
         location: user.location
       }
       return new Promise((resolve, reject) => {
-        firebase.database().ref('users').child(user['.key']).update(removeEmpyProperties(updates))
+        firebase.database().ref('users').child(user['.key']).update(removeEmptyProperties(updates))
           .then(() => {
             commit('setUser', {user, userId: user['.key']})
             resolve(user)

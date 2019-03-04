@@ -2,12 +2,14 @@ import Vue from 'vue'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import 'firebase/auth'
+import Vuelidate from 'vuelidate'
 import App from './App'
 import router from './router'
 import store from './store'
 
 import AppDate from './components/AppDate'
 
+Vue.use(Vuelidate)
 Vue.component('app-date', AppDate)
 
 Vue.config.productionTip = false

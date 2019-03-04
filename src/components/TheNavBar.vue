@@ -17,7 +17,7 @@
 
       <ul v-if="authUser">
         <li class="navbar-user">
-          <a @click.prevent="dropDownActive = !dropDownActive">
+          <a @click.prevent="userDropDownActive = !userDropDownActive" v-click-outside="closeUserDropDown">
             <img class="avatar-small" :src="authUser.avatar" :alt="authUser.username">
             <span>
               {{ authUser.name }}
@@ -26,7 +26,7 @@
           </a>
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
-          <div id="user-dropdown" :class="{'active-drop': dropDownActive}">
+          <div id="user-dropdown" :class="{'active-drop': userDropDownActive}">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
               <li class="dropdown-menu-item">
@@ -70,19 +70,26 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
+import ClickOutside from '../directives/click-outside'
 
-  export default {
-    name: 'TheNavBar',
-    data: () => ({
-      dropDownActive: false
-    }),
-    computed: {
-      ...mapGetters({
-        authUser: 'auth/authUser'
-      })
+export default {
+  name: 'TheNavBar',
+  directives: {ClickOutside},
+  data: () => ({
+    userDropDownActive: false
+  }),
+  computed: {
+    ...mapGetters({
+      authUser: 'auth/authUser'
+    })
+  },
+  methods: {
+    closeUserDropDown () {
+      this.userDropDownActive = false
     }
   }
+}
 </script>
 
 <style scoped>

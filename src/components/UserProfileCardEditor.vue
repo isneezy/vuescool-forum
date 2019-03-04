@@ -52,40 +52,42 @@
 </template>
 
 <script>
-  export default {
-    name: 'UserProfileCardEditor',
-    props: {
-      user: {
-        required: true,
-        type: Object
-      }
+import {mapActions} from 'vuex'
+export default {
+  name: 'UserProfileCardEditor',
+  props: {
+    user: {
+      required: true,
+      type: Object
+    }
+  },
+  data () {
+    return {
+      activeUser: {...this.user}
+    }
+  },
+
+  computed: {
+    userThreadsCount () {
+      return this.$store.getters['users/userThreadsCount'](this.user['.key'])
     },
-    data () {
-      return {
-        activeUser: {...this.user}
-      }
+    userPostsCount () {
+      return this.$store.getters['users/userPostsCount'](this.user['.key'])
+    }
+  },
+
+  methods: {
+    ...mapActions('users', ['updateUser']),
+    save () {
+      this.updateUser({...this.activeUser})
+      this.$router.push({name: 'profile'})
     },
 
-    computed: {
-      userThreadsCount () {
-        return this.$store.getters.userThreadsCount(this.user['.key'])
-      },
-      userPostsCount () {
-        return this.$store.getters.userPostsCount(this.user['.key'])
-      }
-    },
-
-    methods: {
-      save () {
-        this.$store.dispatch('updateUser', {...this.activeUser})
-        this.$router.push({name: 'profile'})
-      },
-
-      cancel () {
-        this.$router.push({name: 'profile'})
-      }
+    cancel () {
+      this.$router.push({name: 'profile'})
     }
   }
+}
 </script>
 
 <style scoped>

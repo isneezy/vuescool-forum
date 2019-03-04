@@ -85,7 +85,7 @@ const router = new Router({
       name: 'signout',
       meta: {requiresAuth: true},
       beforeEnter (to, from, next) {
-        store.dispatch('signOut')
+        store.dispatch('auth/signOut')
           .then(() => next({name: 'home'}))
       }
     },
@@ -107,7 +107,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   console.log(`🚦 navigating to ${to.name} from ${from.name}`)
-  store.dispatch('initAuthentication').then(user => {
+  store.dispatch('auth/initAuthentication').then(user => {
     if (to.matched.some(route => route.meta.requiresAuth)) {
       if (user) {
         next()

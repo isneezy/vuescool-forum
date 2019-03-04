@@ -59,11 +59,11 @@ export default {
   },
   methods: {
     register () {
-      this.$store.dispatch('createUserWithEmailAndPassword', this.form)
+      this.$store.dispatch('auth/createUserWithEmailAndPassword', this.form)
         .then(this.auth_successRedirect)
     },
     registerWithGoogle () {
-      this.signInWithGoogle()
+      this.auth_signInWithGoogle()
     }
   },
   created () {

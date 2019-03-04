@@ -40,16 +40,16 @@
       id: {required: true, type: String}
     },
     computed: {
-      ...mapGetters(['authUser']),
+      ...mapGetters('auth', ['authUser']),
       thread () {
-        return this.$store.state.threads[this.id]
+        return this.$store.state.threads.items[this.id]
       },
       repliesCount () {
-        return this.$store.getters.threadRepliesCount(this.thread['.key'])
+        return this.$store.getters['threads/threadRepliesCount'](this.thread['.key'])
       },
 
       user () {
-        return this.$store.state.users[this.thread.userId]
+        return this.$store.state.users.items[this.thread.userId]
       },
 
       contributorsCount () {
@@ -57,12 +57,14 @@
       },
       posts () {
         const postIds = Object.keys(this.thread.posts)
-        return Object.values(this.$store.state.posts)
+        return Object.values(this.$store.state.posts.items)
           .filter(post => postIds.includes(post['.key']))
       }
     },
     methods: {
-      ...mapActions(['fetchThread', 'fetchPosts', 'fetchUser'])
+      ...mapActions('threads', ['fetchThread']),
+      ...mapActions('posts', ['fetchPosts']),
+      ...mapActions('users', ['fetchUser'])
     },
     created () {
       // fetch thread

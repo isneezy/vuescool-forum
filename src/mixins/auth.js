@@ -1,7 +1,7 @@
 export default {
   methods: {
-    signInWithGoogle () {
-      this.$store.dispatch('signInWithGoogle')
+    auth_signInWithGoogle () {
+      this.$store.dispatch('auth/signInWithGoogle')
         .then(this.auth_successRedirect)
         .catch(e => alert(`🤷‍♂️ ${e.message}`))
     },

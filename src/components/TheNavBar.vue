@@ -32,7 +32,7 @@
               <li class="dropdown-menu-item">
                 <router-link :to="{name: 'profile'}">View profile</router-link>
               </li>
-              <li class="dropdown-menu-item"><a @click.prevent="$store.dispatch('signOut')">Logout</a></li>
+              <li class="dropdown-menu-item"><router-link to="logout">Logout</router-link></li>
             </ul>
           </div>
         </li>
@@ -78,7 +78,9 @@
       dropDownActive: false
     }),
     computed: {
-      ...mapGetters(['authUser'])
+      ...mapGetters({
+        authUser: 'auth/authUser'
+      })
     }
   }
 </script>

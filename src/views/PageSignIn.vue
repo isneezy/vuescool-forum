@@ -42,7 +42,7 @@ export default {
   }),
   methods: {
     signIn () {
-      this.$store.dispatch('signInWithUsernameAndPassword', this.form)
+      this.$store.dispatch('auth/signInWithUsernameAndPassword', this.form)
         .then(this.auth_successRedirect)
         .catch(e => alert(`🤷‍♂️ ${e.message}`))
     }

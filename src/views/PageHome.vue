@@ -15,11 +15,12 @@ export default {
   mixins: [asyncDataMixin],
   computed: {
     ...mapState({
-      categories: state => Object.values(state.categories)
+      categories: state => Object.values(state.categories.items)
     })
   },
   methods: {
-    ...mapActions(['fetchAllCategories', 'fetchForums'])
+    ...mapActions('categories', ['fetchAllCategories']),
+    ...mapActions('forums', ['fetchForums'])
   },
   created () {
     this.fetchAllCategories()

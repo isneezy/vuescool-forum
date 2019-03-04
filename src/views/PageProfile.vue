@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import asyncDataMixin from '@/mixins/asyncDataStatus'
 import PostList from '../components/PostList'
 import UserProfileCard from '../components/UserProfileCard'
@@ -45,14 +45,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: 'authUser'
+      user: 'auth/authUser'
     }),
     userPosts () {
-      return this.$store.getters.userPosts(this.user['.key'])
+      return this.$store.getters['users/userPosts'](this.user['.key'])
     }
   },
+  methods: {
+    ...mapActions('posts', ['fetchPosts'])
+  },
   created () {
-    this.$store.dispatch('fetchPosts', {ids: this.user.posts})
+    this.fetchPosts({ids: this.user.posts})
         .then(this.asyncDataStatus_fetched)
   }
 }
